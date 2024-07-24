@@ -48,19 +48,31 @@ export const getDocument = async ({ roomId, userId }: { roomId: string; userId: 
     }
 }
 
-    export const updateDocument = async ({ roomId, title }: { roomId: string; title: string }) => {
+export const updateDocument = async ({ roomId, title }: { roomId: string; title: string }) => {
 
-        try {
-            console.log('aaaaaaaaaaaa')
-             const updatedRoom = await liveblocks.updateRoom(roomId, {
-                metadata: {title }
-            }
-            );
+    try {
+        console.log('aaaaaaaaaaaa')
+        const updatedRoom = await liveblocks.updateRoom(roomId, {
+            metadata: { title }
+        }
+        );
 
-            revalidatePath('/documents/{${roomId}}')
-            return parseStringify(updatedRoom);
-        }
-        catch (error) {
-            console.log(error)
-        }
+        revalidatePath('/documents/{${roomId}}')
+        return parseStringify(updatedRoom);
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+export const getAllDocuments = async ({ userId }: { userId: string }) => {
+
+    try {
+        const rooms = await liveblocks.getRooms({ userId });
+        return parseStringify(rooms);
+    }
+    catch (error) {
+        console.log(error)
+    }
+
 }

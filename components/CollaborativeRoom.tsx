@@ -9,22 +9,20 @@ import Loader from "./Loader";
 import { Input } from "./ui/input";
 import Image from "next/image";
 import { updateDocument } from "../lib/actions/room.actions";
+import { currentUser } from '@clerk/nextjs/server';
 
 const CollaborativeRoom = ({
   roomId,
   roomMetadata,
-}: {
-  roomId: string;
-  roomMetadata: RoomMetadata;
-}) => {
-  console.log(roomId)
-  const currentUserType = "Editor";
+  users,
+  currentUserType
+}: CollaborativeRoomProps) => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(roomMetadata.title);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+console.log(currentUserType)
   const updateTitleHandler = async (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -95,7 +93,7 @@ const CollaborativeRoom = ({
                 <p className="document-title">{title}</p>
               )}
 
-              {currentUserType === "Editor" && !editing && (
+              {currentUserType === "editor" && !editing && (
                 <Image
                   src="/assets/icons/edit.svg"
                   alt="Edit"
@@ -108,7 +106,7 @@ const CollaborativeRoom = ({
                 />
               )}
 
-              {currentUserType !== "Editor" && !editing && (
+              {currentUserType !== "editor" && !editing && (
                 <p className="view-only-tag">View only</p>
               )}
 
@@ -125,7 +123,10 @@ const CollaborativeRoom = ({
             </div>
           </Header>
 
-          <Editor />
+          <Editor 
+            roomId={roomId}
+           currentUserType= {currentUserType}
+          />
         </div>
       </ClientSideSuspense>
     </RoomProvider>
