@@ -51,7 +51,6 @@ export const getDocument = async ({ roomId, userId }: { roomId: string; userId: 
 export const updateDocument = async ({ roomId, title }: { roomId: string; title: string }) => {
 
     try {
-        console.log('aaaaaaaaaaaa')
         const updatedRoom = await liveblocks.updateRoom(roomId, {
             metadata: { title }
         }
@@ -73,6 +72,26 @@ export const getAllDocuments = async ({ userId }: { userId: string }) => {
     }
     catch (error) {
         console.log(error)
+    }
+}
+
+export const getDocumentUsers = async ({ roomId, currentUser, text }: { roomId: string, currentUser: string, text: string }) => {
+    try {
+        const room = await liveblocks.getRoom(roomId);
+
+        const users = Object.keys(room.usersAccesses).filter((email) => email !== currentUser);
+
+        if (text.length) {
+            const lowerCaseText = text.toLowerCase();
+
+            const filteredUsers = users.filter((email: string) => email.toLowerCase().includes(lowerCaseText))
+
+            return parseStringify(filteredUsers);
+        }
+
+        return parseStringify(users);
+    } catch (error) {
+        console.log(`Error fetching document users: ${error}`);
     }
 
 }
